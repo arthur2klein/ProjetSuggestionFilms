@@ -1,5 +1,3 @@
-import 'package:suggestion_films/models/genre.dart';
-
 class Movie {
   final String movieid;
   final String movietitle;
@@ -9,7 +7,6 @@ class Movie {
   final String imgurl;
   final double usernote;
   final double time;
-  final List<Genre> genres;
 
   Movie({
     required this.movieid,
@@ -20,7 +17,6 @@ class Movie {
     required this.imgurl,
     required this.usernote,
     required this.time,
-    required this.genres,
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) {
@@ -33,9 +29,6 @@ class Movie {
       imgurl: json['imgurl'],
       usernote: json['usernote'],
       time: json['time'],
-      genres: json['genres'].map(
-        (genre) => Genre.fromJson(genre),
-      ),
     );
   }
 
@@ -49,9 +42,6 @@ class Movie {
       'imgurl': imgurl,
       'usernote': usernote,
       'time': time,
-      'genres': genres.map(
-        (genre) => genre.toJson(),
-      ),
     };
   }
 }

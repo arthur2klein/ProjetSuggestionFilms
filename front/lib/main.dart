@@ -4,6 +4,7 @@ import 'package:suggestion_films/pages/film_page.dart';
 import 'package:suggestion_films/pages/gestion_groupe_page.dart';
 import 'package:suggestion_films/pages/gestion_user.dart';
 import 'package:suggestion_films/pages/home_page.dart';
+import 'package:suggestion_films/pages/rate_movie_page.dart';
 import 'package:suggestion_films/pages/recommended_page.dart';
 import 'package:suggestion_films/pages/search_film_page.dart';
 import 'package:suggestion_films/pages/user_creation_page.dart';
@@ -29,10 +30,11 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomePage(),
         '/create-account': (context) => const UserCreationPage(),
-        '/film': (context) => const FilmPage(),
+        '/movie': (context) => const FilmPage(),
         '/group': (context) => const GestionGroupePage(),
         '/login': (context) => const UserLoginPage(),
         '/manage': (context) => const GestionUserPage(),
+        '/rate': (BuildContext context) => const RateMoviePage(),
         '/recommended': (context) => const RecommendedPage(),
         '/search': (context) => const SearchFilmPage(),
         '/tou': (context) => const CGUPage(),
