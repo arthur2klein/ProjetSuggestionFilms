@@ -19,7 +19,7 @@ class GestionUserPage extends StatelessWidget {
               onPressed: () {
                 UserService().logOut();
                 Navigator.of(context).popUntil(
-                  ModalRoute.withName('/'),
+                  (route) => route.isFirst,
                 );
               },
               child: const Row(

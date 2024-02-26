@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:suggestion_films/components/my_scaffold.dart';
+import 'package:suggestion_films/components/recommended_list_component.dart';
 
 class RecommendedPage extends StatelessWidget {
   const RecommendedPage({super.key});
@@ -7,10 +8,15 @@ class RecommendedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MyScaffold(
-      body: Center(
-        child: Text(
-          'This page will show the films recommended for the group.',
-        ),
+      body: Column(
+        children: [
+          Text(
+            'Recommended',
+          ),
+          Expanded(
+            child: RecommendedListComponent(),
+          ),
+        ],
       ),
       title: 'Recommended',
     );

@@ -1,5 +1,7 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:suggestion_films/models/genre.dart';
 import 'package:suggestion_films/models/movie.dart';
 import 'package:suggestion_films/services/movie_service.dart';
 
@@ -97,104 +99,183 @@ class MovieComponent extends StatelessWidget {
       );
     }
 
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                FutureBuilder<bool>(
-                  future: MovieService().userSaw(movie),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('FutureBuilder Error: $snapshot.error}');
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              FutureBuilder<bool>(
+                future: MovieService().userSaw(movie),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('FutureBuilder Error: $snapshot.error}');
+                  } else {
+                    bool sawed = snapshot.data ?? false;
+                    if (sawed) {
+                      return const Icon(EvaIcons.eyeOutline);
                     } else {
-                      bool sawed = snapshot.data ?? false;
-                      if (sawed) {
-                        return const Icon(EvaIcons.eyeOutline);
-                      } else {
-                        return const Icon(EvaIcons.eyeOff);
-                      }
+                      return const Icon(EvaIcons.eyeOff);
                     }
-                  },
+                  }
+                },
+              ),
+              Text(
+                movie.movietitle,
+                style: const TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.w500,
                 ),
-                Text(
-                  movie.movietitle,
-                  style: const TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.w500,
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        'Release date:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(formatDate(movie.releasedate)),
+                    ],
                   ),
-                ),
-              ],
+                  Row(
+                    children: [
+                      const Text(
+                        'Director:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(movie.director),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Text(
+                        'My note:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      FutureBuilder(
+                        future: MovieService().getNote(movie),
+                        builder: (
+                          BuildContext context,
+                          AsyncSnapshot<dynamic> snapshot,
+                        ) {
+                          if (snapshot.hasData) {
+                            double? note = snapshot.data();
+                            if (note != null) {
+                              return Text('$note');
+                            }
+                          }
+                          return const Text('No note');
+                        },
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Text(
+                        'User note:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text('${movie.usernote}'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Text(
+                        'Time:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(formatTime(movie.time.toInt())),
+                    ],
+                  ),
+                ],
+              ),
+              Image.network(movie.imgurl, width: 500, height: 300),
+            ],
+          ),
+          Flexible(
+            child: FutureBuilder<List<Genre>>(
+              future: MovieService().getGenres(movie),
+              builder: (
+                context,
+                snapshot,
+              ) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  List<Genre> genres = snapshot.data ?? [];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Genres:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          Wrap(
+                            children: [
+                              Wrap(
+                                children: genres.map((genre) {
+                                  return Container(
+                                    margin: const EdgeInsets.all(4),
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(genre.genrename),
+                                  );
+                                }).toList(),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                }
+              },
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Row(
-                      children: [
-                        const Text(
-                          'Release date:',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(formatDate(movie.releasedate)),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text(
-                          'Director:',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(movie.director),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text(
-                          'User note:',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text('${movie.usernote}'),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Text(
-                          'Time:',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(formatTime(movie.time.toInt())),
-                      ],
-                    ),
-                  ],
-                ),
-                Image.network(movie.imgurl, width: 500, height: 300),
-              ],
-            ),
-            SingleChildScrollView(
+          ),
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
                 children: [
                   const Text(
@@ -207,23 +288,23 @@ class MovieComponent extends StatelessWidget {
                 ],
               ),
             ),
-            const Spacer(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed(
-                    '/rate',
-                    arguments: {
-                      'movie': movie,
-                    },
-                  );
-                },
-                child: const Text('Note this film'),
-              ),
+          ),
+          const Spacer(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(
+                  '/rate',
+                  arguments: {
+                    'movie': movie,
+                  },
+                );
+              },
+              child: const Text('Note this film'),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
