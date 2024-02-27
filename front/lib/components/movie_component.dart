@@ -1,6 +1,5 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:suggestion_films/models/genre.dart';
 import 'package:suggestion_films/models/movie.dart';
 import 'package:suggestion_films/services/movie_service.dart';
@@ -22,7 +21,9 @@ class MovieComponent extends StatelessWidget {
   }
 
   String formatDate(int nSeconds) {
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(nSeconds * 1000);
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
+      nSeconds * 1000,
+    );
     String formattedDate =
         '${dateTime.year}-${_twoDigits(dateTime.month)}-${_twoDigits(dateTime.day)}';
     return formattedDate;
@@ -116,12 +117,10 @@ class MovieComponent extends StatelessWidget {
                   } else if (snapshot.hasError) {
                     return Text('FutureBuilder Error: $snapshot.error}');
                   } else {
-                    bool sawed = snapshot.data ?? false;
-                    if (sawed) {
-                      return const Icon(EvaIcons.eyeOutline);
-                    } else {
-                      return const Icon(EvaIcons.eyeOff);
-                    }
+                    bool hasSeen = snapshot.data ?? false;
+                    return Icon(
+                      hasSeen ? EvaIcons.eyeOutline : EvaIcons.eyeOff,
+                    );
                   }
                 },
               ),
@@ -248,7 +247,9 @@ class MovieComponent extends StatelessWidget {
                           Wrap(
                             children: [
                               Wrap(
-                                children: genres.map((genre) {
+                                children: genres.map((
+                                  genre,
+                                ) {
                                   return Container(
                                     margin: const EdgeInsets.all(4),
                                     padding: const EdgeInsets.all(8),
@@ -258,7 +259,9 @@ class MovieComponent extends StatelessWidget {
                                             .colorScheme
                                             .secondary,
                                       ),
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(
+                                        10,
+                                      ),
                                     ),
                                     child: Text(genre.genrename),
                                   );

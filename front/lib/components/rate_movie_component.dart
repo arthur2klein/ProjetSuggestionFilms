@@ -44,11 +44,12 @@ class _RateMovieComponentState extends State<RateMovieComponent> {
           Column(
             children: [
               const SizedBox(height: 16),
-              Text('Rate this film $_rating'),
+              Text('Rate this film ${_rating.toStringAsFixed(2)}',),
               Slider(
                 value: _rating,
                 min: 0,
                 max: 5,
+                divisions: 500,
                 onChanged: (value) {
                   setState(() {
                     _rating = value;
