@@ -29,21 +29,67 @@ class MovieService {
   }
 
   Future<List<Movie>> search(String query) async {
-    return [
+    var movies = [
+      Movie(
+        movieid: '0',
+        movietitle: 'banane',
+        releasedate: 20151005,
+        synopsis: "my synosis ",
+        director: 'Director',
+        imgurl:
+            'https://marsner.com/wp-content/uploads/test-driven-development-TDD.png',
+        usernote: 3.5,
+        time: 4214,
+      ),
+      Movie(
+        movieid: '1',
+        movietitle: 'pomme',
+        releasedate: 20151005,
+        synopsis: "my synosis ",
+        director: 'Director',
+        imgurl:
+            'https://marsner.com/wp-content/uploads/test-driven-development-TDD.png',
+        usernote: 3.5,
+        time: 4214,
+      ),
+      Movie(
+        movieid: '2',
+        movietitle: 'citron',
+        releasedate: 20151005,
+        synopsis: "my synosis ",
+        director: 'Director',
+        imgurl:
+            'https://marsner.com/wp-content/uploads/test-driven-development-TDD.png',
+        usernote: 3.5,
+        time: 4214,
+      ),
       Movie(
         movieid: '3',
-        movietitle: 'Test',
+        movietitle: 'orange',
         releasedate: 20151005,
-        synopsis: """Synosis: 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut ultricies est ac tincidunt pellentesque. Ut vitae sodales nulla, ac rhoncus arcu. Sed imperdiet accumsan nulla et sollicitudin. Nunc eros urna, viverra id lectus id, tincidunt imperdiet dui. Sed rhoncus mi id magna porta, vitae faucibus diam hendrerit. Nulla leo mauris, condimentum eget urna nec, suscipit elementum diam. Suspendisse ut metus nisi. Suspendisse et urna fermentum, ultrices sem ut, euismod dui. Curabitur sed condimentum ex. In feugiat elit vitae blandit porta. Integer dignissim, ex in finibus malesuada, felis lectus ullamcorper mi, placerat aliquet ipsum nulla id nisi. Sed tincidunt mattis consequat. Sed blandit ipsum at nulla imperdiet fringilla. Suspendisse eu risus non orci bibendum mattis. Duis sit amet urna pretium, condimentum turpis eget, euismod felis. Aenean justo metus, accumsan vitae justo in, rutrum hendrerit nibh.
-
-Etiam turpis nunc, dictum non sapien ac, pharetra ultricies nisl. Donec lobortis iaculis quam eu varius. Nam id tellus vulputate, ultricies tortor venenatis, accumsan tellus. Sed at eros vehicula, iaculis mauris non, aliquam mi. Pellentesque venenatis sagittis diam, sit amet lacinia metus faucibus et. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus felis leo, malesuada in venenatis maximus, auctor nec sapien. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur id feugiat odio, eget tincidunt justo. Etiam ut fringilla magna.
-
-Phasellus eu diam bibendum, vulputate nisl nec, euismod lorem. Aliquam sodales dignissim dictum. Nullam suscipit mi a enim cursus, at dictum nulla convallis. Suspendisse lobortis vestibulum pretium. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut sed lobortis mauris, id scelerisque dui. Sed semper a enim vel efficitur. Sed commodo mi ut mauris luctus tincidunt. Fusce fermentum sodales nisl sed pretium. Suspendisse hendrerit, libero sit amet facilisis convallis, ante neque varius nisi, quis faucibus tellus quam at augue. Curabitur libero eros, imperdiet efficitur scelerisque non, tempus condimentum erat. In fringilla, nunc eu venenatis dignissim, diam magna sagittis lorem, non faucibus massa nunc at libero. Etiam in diam in lorem sollicitudin laoreet gravida at elit.
-
-Donec dapibus purus sit amet odio egestas tempor. Pellentesque vehicula eros vitae lacus egestas, eu tincidunt enim vulputate. Vestibulum posuere mi quis metus varius volutpat. Vestibulum ut aliquet velit, in blandit lacus. Curabitur iaculis at augue ut pellentesque. Nam eget justo luctus, dictum tellus nec, malesuada enim. Pellentesque non sem et lorem feugiat mattis eu non ipsum. Cras ornare, sem id rhoncus congue, orci odio tincidunt arcu, in maximus metus lacus at dui. In felis nibh, consectetur vel elit eget, iaculis rutrum nibh. Fusce risus dolor, mollis tincidunt velit a, pellentesque porttitor sem. Phasellus et augue metus.
-
-Ut tristique commodo justo, ac rhoncus massa pellentesque ut. Quisque aliquet arcu vel feugiat blandit. Donec in arcu quis mi dictum varius et vitae quam. Duis a magna nec lectus molestie tempus. Quisque sed enim lorem. Donec nec velit eu dui congue imperdiet. Aliquam erat volutpat. Integer ac nibh eu enim tristique tincidunt. Aliquam viverra dignissim aliquam. Etiam sed lacus dapibus purus gravida euismod. Quisque euismod, augue nec sagittis vulputate, elit elit lacinia risus, euismod ultricies dolor enim sed sem. Aliquam urna velit, dignissim et nunc in, pretium convallis eros. """,
+        synopsis: "my synosis ",
+        director: 'Director',
+        imgurl:
+            'https://marsner.com/wp-content/uploads/test-driven-development-TDD.png',
+        usernote: 3.5,
+        time: 4214,
+      ),
+      Movie(
+        movieid: '4',
+        movietitle: 'kiwi',
+        releasedate: 20151005,
+        synopsis: "my synosis ",
+        director: 'Director',
+        imgurl:
+            'https://marsner.com/wp-content/uploads/test-driven-development-TDD.png',
+        usernote: 3.5,
+        time: 4214,
+      ),
+      Movie(
+        movieid: '5',
+        movietitle: 'fraise',
+        releasedate: 20151005,
+        synopsis: "my synosis ",
         director: 'Director',
         imgurl:
             'https://marsner.com/wp-content/uploads/test-driven-development-TDD.png',
@@ -51,6 +97,11 @@ Ut tristique commodo justo, ac rhoncus massa pellentesque ut. Quisque aliquet ar
         time: 4214,
       ),
     ];
+    return movies
+        .where(
+          (movie) => movie.movietitle.contains(query),
+        )
+        .toList();
     final response = await http.get(
       Uri.parse('$apiUrl/movie/search'),
       headers: {'query': query},
@@ -124,7 +175,7 @@ Ut tristique commodo justo, ac rhoncus massa pellentesque ut. Quisque aliquet ar
       headers: {
         'user': UserService().currentUser!.userid,
         'movie': movie.movieid,
-        'hasSeen':  saw?'1':'0',
+        'hasSeen': saw ? '1' : '0',
       },
     );
     if (response.statusCode != 200) {

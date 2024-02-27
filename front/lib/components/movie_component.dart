@@ -56,7 +56,11 @@ class MovieComponent extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.network(movie.imgurl, width: 200),
+                Image.network(
+                  movie.imgurl,
+                  height: 150,
+                  width: 200,
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -84,12 +88,10 @@ class MovieComponent extends StatelessWidget {
                     } else if (snapshot.hasError) {
                       return Text('FutureBuilder Error: $snapshot.error}');
                     } else {
-                      bool sawed = snapshot.data ?? false;
-                      if (sawed) {
-                        return const Icon(EvaIcons.eyeOutline);
-                      } else {
-                        return const Icon(EvaIcons.eyeOff);
-                      }
+                      bool hasSeen = snapshot.data ?? false;
+                      return Icon(
+                        hasSeen ? EvaIcons.eyeOutline : EvaIcons.eyeOff,
+                      );
                     }
                   },
                 ),

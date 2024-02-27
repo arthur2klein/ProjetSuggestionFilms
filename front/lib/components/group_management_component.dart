@@ -73,12 +73,17 @@ class _GroupManagementComponentState extends State<GroupManagementComponent> {
           ),
         ),
         const Divider(),
+        const Text(
+          'Current group members',
+          style: TextStyle(fontWeight: FontWeight.w500),
+        ),
         Expanded(
           child: ListView.builder(
             itemCount: GroupService().currentGroup.length,
             itemBuilder: (context, index) {
               User user = GroupService().currentGroup[index];
               return ListTile(
+                tileColor: Theme.of(context).colorScheme.surfaceVariant,
                 title: Text(user.uname),
                 trailing: (GroupService().containsUser(user))
                     ? IconButton(
