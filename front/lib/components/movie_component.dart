@@ -137,87 +137,91 @@ class MovieComponent extends StatelessWidget {
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        'Release date:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
+              Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          'Release date:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(formatDate(movie.releasedate)),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        'Director:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                        const SizedBox(width: 8),
+                        Text(formatDate(movie.releasedate)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          'Director:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(movie.director),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        'My note:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                        const SizedBox(width: 8),
+                        Text(movie.director),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          'My note:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      FutureBuilder(
-                        future: MovieService().getNote(movie),
-                        builder: (
-                          BuildContext context,
-                          AsyncSnapshot<dynamic> snapshot,
-                        ) {
-                          if (snapshot.hasData) {
-                            double? note = snapshot.data();
-                            if (note != null) {
-                              return Text('$note');
+                        const SizedBox(width: 8),
+                        FutureBuilder(
+                          future: MovieService().getNote(movie),
+                          builder: (
+                            BuildContext context,
+                            AsyncSnapshot<dynamic> snapshot,
+                          ) {
+                            if (snapshot.hasData) {
+                              double? note = snapshot.data();
+                              if (note != null) {
+                                return Text('$note');
+                              }
                             }
-                          }
-                          return const Text('No note');
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        'User note:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                            return const Text('No note');
+                          },
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text('${movie.usernote}'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        'Time:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          'User note:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(formatTime(movie.time.toInt())),
-                    ],
-                  ),
-                ],
+                        const SizedBox(width: 8),
+                        Text('${movie.usernote}'),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const Text(
+                          'Time:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(formatTime(movie.time.toInt())),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               Image.network(movie.imgurl, width: 500, height: 300),
             ],

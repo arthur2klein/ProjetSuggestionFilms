@@ -30,91 +30,106 @@ class _GroupManagementComponentState extends State<GroupManagementComponent> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TextField(
-          controller: searchController,
-          onChanged: searchUsers,
-          decoration: InputDecoration(
-            labelText: 'Search by username',
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () {
-                searchController.clear();
-                searchUsers('');
-              },
-            ),
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: searchedUsers.length,
-            itemBuilder: (context, index) {
-              User user = searchedUsers[index];
-              return ListTile(
-                title: Text(user.uname),
-                trailing: (GroupService().containsUser(user))
-                    ? IconButton(
-                        icon: const Icon(Icons.remove),
-                        onPressed: () {
-                          setState(() {
-                            GroupService().removeUser(user);
-                          });
-                        },
-                      )
-                    : IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () {
-                          setState(() {
-                            GroupService().addUser(user);
-                          });
-                        },
-                      ),
-              );
-            },
-          ),
-        ),
+      searchUserWidget(),
+        Expanded(child: listViewSearchedUsers()),
         const Divider(),
         const Text(
           'Current group members',
           style: TextStyle(fontWeight: FontWeight.w500),
         ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: GroupService().currentGroup.length,
-            itemBuilder: (context, index) {
-              User user = GroupService().currentGroup[index];
-              return ListTile(
-                tileColor: Theme.of(context).colorScheme.surfaceVariant,
-                title: Text(user.uname),
-                trailing: (GroupService().containsUser(user))
-                    ? IconButton(
-                        icon: const Icon(Icons.remove),
-                        onPressed: () {
-                          setState(() {
-                            GroupService().removeUser(user);
-                          });
-                        },
-                      )
-                    : IconButton(
-                        icon: const Icon(Icons.add),
-                        onPressed: () {
-                          setState(() {
-                            GroupService().addUser(user);
-                          });
-                        },
-                      ),
-              );
-            },
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              GroupService().reinitializeGroup();
-            });
-          },
-          child: const Text('Reinitialize Group'),
-        ),
+        Expanded(child: listViewUsersInGroup()),
+        buttonReinitialize(),
       ],
+    );
+  }
+
+  Widget searchUserWidget() {
+    return TextField(
+      controller: searchController,
+      onChanged: searchUsers,
+      decoration: InputDecoration(
+        labelText: 'Search by username',
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () {
+            searchController.clear();
+            searchUsers('');
+          },
+        ),
+      ),
+    );
+  }
+
+  ListView listViewSearchedUsers() {
+    return ListView.builder(
+      itemCount: searchedUsers.length,
+      itemBuilder: (context, index) {
+        User user = searchedUsers[index];
+        return Padding(
+          padding: const EdgeInsets.all(1.0),
+          child: listTileUser(
+            user: user,
+            color: Theme.of(context).colorScheme.background,
+          ),
+        );
+      },
+    );
+  }
+
+  ListView listViewUsersInGroup() {
+    return ListView.builder(
+      itemCount: GroupService().currentGroup.length,
+      itemBuilder: (context, index) {
+        User user = GroupService().currentGroup[index];
+        return Padding(
+          padding: const EdgeInsets.all(1.0),
+          child: listTileUser(
+            user: user,
+            color: Theme.of(context).colorScheme.surfaceVariant,
+          ),
+        );
+      },
+    );
+  }
+
+  ListTile listTileUser({
+    required User user,
+    required Color color,
+  }) {
+    return ListTile(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      tileColor: color,
+      title: Text(user.uname),
+      trailing: (GroupService().containsUser(user))
+          ? IconButton(
+              icon: const Icon(Icons.remove),
+              onPressed: () {
+                setState(() {
+                  GroupService().removeUser(user);
+                });
+              },
+            )
+          : IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {
+                setState(() {
+                  GroupService().addUser(user);
+                });
+              },
+            ),
+    );
+  }
+
+  Widget buttonReinitialize() {
+    return ElevatedButton(
+      onPressed: () {
+        setState(() {
+          GroupService().reinitializeGroup();
+        });
+      },
+      child: const Text('Reinitialize Group'),
     );
   }
 }

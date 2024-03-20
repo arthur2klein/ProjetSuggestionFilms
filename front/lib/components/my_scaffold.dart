@@ -31,7 +31,10 @@ class _MyScaffoldState extends State<MyScaffold> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: widget.body,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: widget.body,
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).pushNamed(
