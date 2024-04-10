@@ -86,7 +86,7 @@ class MovieComponent extends StatelessWidget {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
                     } else if (snapshot.hasError) {
-                      return Text('FutureBuilder Error: $snapshot.error}');
+                      return Text('FutureBuilder Error when checking if viewed: $snapshot.error}');
                     } else {
                       bool hasSeen = snapshot.data ?? false;
                       return Icon(
