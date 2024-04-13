@@ -29,9 +29,9 @@ class Rating(BaseModel):
 
 def get_imdb_rating(movie_id: str) -> float:
     try:
-        reviews = ia.get_movie_user_reviews(movie_id)
+        reviews = ia.get_movie_reviews(movie_id)['data']['reviews']
         if reviews:
-            ratings = [review.data['rating'] for review in reviews]
+            ratings = [review['rating'] for review in reviews if review['rating'] != None]
             avg_rating = sum(ratings) / len(ratings)
             return avg_rating
         else:
@@ -47,10 +47,10 @@ async def movie(movie_id: str):
                 'movieid': movie_id,
                 'movietitle': movie.get('title', ''),
                 'releasedate': movie.get('year', 0),
-                'synopsis': movie.get('plot outline', ''),
-                'director': ', '.join(sorted([d['name'] for d in movie.get('directors',[])])),
+                'synopsis': movie.get_movie_synopsis('synopsis', '')['data']['plot'],
+                'director': movie.get('director',''),
                 'imgurl': movie.get('full-size cover url', ''),
-                'usernote': get_imdb_rating(movie_id),
+                'usernote': movie.get('rating', 0),
                 'time': movie.get('runtimes', [0])[0] if movie.get('runtimes') else 0}
         return {'data': movie_details}
     except Exception:
@@ -60,6 +60,7 @@ async def movie(movie_id: str):
 async def search_movie(query: str = Query(..., min_length=1)):
     try:
         results = ia.search_movie(query, 10)
+        print(results)
         movies = []
         for movie in results:
             movie_id = movie.movieID
@@ -67,8 +68,8 @@ async def search_movie(query: str = Query(..., min_length=1)):
                 'movieid': movie_id,
                 'movietitle': movie.get('title', ''),
                 'releasedate': movie.get('year', 0),
-                'synopsis': movie.get('plot outline', ''),
-                'director': ', '.join(sorted([d['name'] for d in movie.get('directors',[])])),
+                'synopsis': movie.get_movie_synopsis('synopsis', '')['data']['plot'],
+                'director': movie.get('director',''),
                 'imgurl': movie.get('full-size cover url', ''),
                 'usernote': get_imdb_rating(movie_id),
                 'time': movie.get('runtimes', [0])[0] if movie.get('runtimes') else 0
