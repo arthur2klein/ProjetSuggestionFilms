@@ -74,8 +74,8 @@ async def change_user(user: UserDb):
                 )
         conn.commit()
         return {"user": user.dict()}
-    except:
-        raise HTTPException(status_code=500, detail="Database error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         conn.close()
 
@@ -87,7 +87,7 @@ async def get_all_users():
         cursor.execute("SELECT * FROM users")
         result = cursor.fetchall()
         return {"users": [u.dict() for u in result]}
-    except:
-        raise HTTPException(status_code=500, detail="Database error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         conn.close()
