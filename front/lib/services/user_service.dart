@@ -22,6 +22,9 @@ class UserService {
     GroupService().reinitializeGroup();
     final response = await http.post(
       Uri.parse('$apiUrl/user/create'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
       body: jsonEncode({
         'uname': uname,
         'email': email,
@@ -29,15 +32,16 @@ class UserService {
       }),
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       // Created
       final jsonResponse = json.decode(response.body);
+      print(jsonResponse);
       currentUser = User.fromJson(jsonResponse['user']);
       return '';
     } else {
       final jsonResponse = json.decode(response.body);
       final errorMessage = jsonResponse['error'] ?? 'User creation failed.';
-      debugPrint('Error: $errorMessage');
+      print('Error: $errorMessage');
       return errorMessage;
     }
   }
@@ -59,12 +63,13 @@ class UserService {
     if (response.statusCode == 200) {
       // Everything OK
       final jsonResponse = json.decode(response.body);
+      print(jsonResponse);
       currentUser = User.fromJson(jsonResponse['user']);
       return '';
     } else {
       final jsonResponse = json.decode(response.body);
       final errorMessage = jsonResponse['error'] ?? 'Login failed.';
-      debugPrint('Error: $errorMessage');
+      print('Error: $errorMessage');
       return errorMessage;
     }
   }
@@ -97,7 +102,7 @@ class UserService {
     } else {
       final jsonResponse = json.decode(response.body);
       final errorMessage = jsonResponse['error'] ?? 'Login failed.';
-      debugPrint('Error: $errorMessage');
+      print('Error: $errorMessage');
       return errorMessage;
     }
   }
@@ -117,7 +122,7 @@ class UserService {
     } else {
       final jsonResponse = json.decode(response.body);
       final errorMessage = jsonResponse['error'] ?? 'Could not get users';
-      debugPrint('Error: $errorMessage');
+      print('Error: $errorMessage');
       return [];
     }
   }

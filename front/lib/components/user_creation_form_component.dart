@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:suggestion_films/services/user_service.dart';
 
 class UserCreationFormComponent extends StatefulWidget {
   const UserCreationFormComponent({super.key});
@@ -70,9 +71,9 @@ class _UserCreationFormComponentState extends State<UserCreationFormComponent> {
               if (value == null || value.isEmpty) {
                 return 'Please confirm your password';
               }
-              if (value != _passwordController.text) {
+              /* if (value != _password) {
                 return 'Password do not match';
-              }
+              } */
               return null;
             },
             obscureText: true,
@@ -97,9 +98,11 @@ class _UserCreationFormComponentState extends State<UserCreationFormComponent> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      print('Username: $_uname');
-      print('E-mail: $_email');
-      print('Password: $_password');
+      UserService().createUser(
+        _uname,
+        _email,
+        _password,
+      );
     }
   }
 }

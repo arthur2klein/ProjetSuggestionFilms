@@ -53,7 +53,7 @@ class MovieService {
       }
       return movies;
     } else {
-      debugPrint('Search error');
+      print('Search error');
       return [];
     }
   }
@@ -66,14 +66,17 @@ class MovieService {
     );
     final response = await http.post(
       uri,
-      body: {
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
         'user': UserService().currentUser!.userid,
         'movie': movie.movieid,
         'rating': note.toString(),
-      },
+      }),
     );
     if (response.statusCode != 200) {
-      debugPrint('Error when setting note');
+      print('Error when setting note');
     }
   }
 
@@ -83,11 +86,13 @@ class MovieService {
       port: apiPort,
       path: '/movie/rating',
       queryParameters: {
-        'user': UserService().currentUser!.userid,
+        'user': UserService().currentUser?.userid ?? '',
         'movie': movie.movieid,
       },
     );
-    final response = await http.get(uri);
+    final response = await http.get(
+      uri,
+    );
     if (response.statusCode != 200) {
       return null;
     } else {
@@ -106,16 +111,18 @@ class MovieService {
       port: apiPort,
       path: '/movie/seen',
       queryParameters: {
-        'user': UserService().currentUser!.userid,
+        'user': UserService().currentUser?.userid ?? '',
         'movie': movie.movieid,
       },
     );
-    final response = await http.get(uri);
+    final response = await http.get(
+      uri,
+    );
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
-      return jsonResponse['data'] == '1';
+      return jsonResponse['data'] == 1;
     } else {
-      debugPrint('Search error');
+      print('Search error');
       return false;
     }
   }
@@ -131,14 +138,17 @@ class MovieService {
     );
     final response = await http.post(
       uri,
-      body: {
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
         'user': UserService().currentUser!.userid,
         'movie': movie.movieid,
         'hasSeen': saw ? '1' : '0',
-      },
+      }),
     );
     if (response.statusCode != 200) {
-      debugPrint('Error when setting note');
+      print('Error when setting note');
     }
   }
 
@@ -156,11 +166,11 @@ class MovieService {
       final jsonResponse = json.decode(response.body);
       List<Genre> genres = [];
       for (var genre in jsonResponse['data']) {
-        genres.add(Genre.fromJson(genre));
+        genres.add(Genre.fromName(genre));
       }
       return genres;
     } else {
-      debugPrint('Search error');
+      print('Search error');
       return [];
     }
   }
@@ -189,7 +199,7 @@ class MovieService {
       }
       return movies;
     }
-    debugPrint('Search error');
+    print('Search error');
     return [];
   }
 }

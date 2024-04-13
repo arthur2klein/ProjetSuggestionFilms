@@ -1,53 +1,93 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+from db import get_db_connection
 
 router = APIRouter()
 
 class User(BaseModel):
-    userid: str
     uname: str
     email: str
     password: str
+
+class UserDb(User):
+    userid: str
 
 class LoginInfos(BaseModel):
     email: str
     password: str
 
-test_user = User(
-    userid='0',
-    uname='test',
-    email='test@mail.com',
-    password='tE5!tE5!'
-)
-
 @router.post("/create")
 async def create_user(user: User):
-    return {"user": user.dict()}
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+                "INSERT INTO users (username, email, password) VALUES (%s, %s, %s) RETURNING user_id",
+                (user.uname, user.email, user.password)
+                )
+        result = cursor.fetchall()
+        user_id = result[0][0]
+        user_db = user.dict()
+        user_db['user_id'] = str(user_id)
+        conn.commit()
+        return {"user": user_db}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        conn.close()
 
 @router.post("/login")
 async def login_user(loginInfos: LoginInfos):
-    if (loginInfos.email == test_user.email and
-        loginInfos.password == test_user.password):
-        return {"user": test_user.dict()}
-    else:
-        raise HTTPException(status_code=404, detail="User not found")
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+                "SELECT * FROM users WHERE email=%s AND password=%s",
+                (loginInfos.email, loginInfos.password)
+                )
+        result = cursor.fetchall()
+        if len(result) != 0:
+            user = result[0]
+            print(user)
+            res = {"user": {
+                "user_id": str(user[0]),
+                "username": user[1],
+                "email": user[2],
+                "password": user[3]
+                }}
+        else:
+            raise HTTPException(status_code=404, detail="User not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    finally:
+        conn.close()
+    return res
 
 @router.post("/change")
-async def change_user(user: User):
-    test_user.uname = user.uname
-    test_user.email = user.email
-    test_user.password = user.password
-    return {"user": test_user.dict()}
+async def change_user(user: UserDb):
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(
+                "UPDATE users SET username=%s, email=%s, password=%s WHERE user_id=%s",
+                (user.uname, user.email, user.password, user.userid)
+                )
+        conn.commit()
+        return {"user": user.dict()}
+    except:
+        raise HTTPException(status_code=500, detail="Database error")
+    finally:
+        conn.close()
 
 @router.get("/all")
 async def get_all_users():
-    users = [
-        User(
-            userid=str(i),
-            uname=f"name{i}",
-            email=f"email{i}@test.com",
-            password=f"password{i}"
-            )
-        for i in range(1, 18)
-    ]
-    return {"users": [user.dict() for user in users]}
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users")
+        result = cursor.fetchall()
+        return {"users": [u.dict() for u in result]}
+    except:
+        raise HTTPException(status_code=500, detail="Database error")
+    finally:
+        conn.close()

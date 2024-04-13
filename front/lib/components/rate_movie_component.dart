@@ -86,4 +86,5 @@ class _RateMovieComponentState extends State<RateMovieComponent> {
       );
     }
   }
+
 }

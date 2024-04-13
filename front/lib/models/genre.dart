@@ -14,6 +14,13 @@ class Genre {
     );
   }
 
+  factory Genre.fromName(String name) {
+    return Genre(
+      genreid: "",
+      genrename: name,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'genreid': genreid,

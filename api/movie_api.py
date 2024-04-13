@@ -53,7 +53,7 @@ async def movie(movie_id: str):
                 'usernote': get_imdb_rating(movie_id),
                 'time': movie.get('runtimes', [0])[0] if movie.get('runtimes') else 0}
         return {'data': movie_details}
-    except IMDbDataAccessError:
+    except Exception:
         raise HTTPException(status_code=404, detail="Movie not found")
 
 @router.get("/search")
@@ -74,7 +74,7 @@ async def search_movie(query: str = Query(..., min_length=1)):
                 'time': movie.get('runtimes', [0])[0] if movie.get('runtimes') else 0
                 })
         return {'data': movies}
-    except IMDbDataAccessError:
+    except Exception:
         raise HTTPException(status_code=500, detail="IMDb data access error")
 
 @router.get("/rating")
@@ -92,8 +92,8 @@ async def get_rating(user: str, movie: str):
             return {"user": user, "movie": movie, "rating": rating}
         else:
             raise HTTPException(status_code=404, detail="Rating not found")
-    except:
-        raise HTTPException(status_code=500, detail="Database error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         conn.close()
 
@@ -103,13 +103,13 @@ async def rate_movie(rating: Rating):
     try:
         cursor = conn.cursor()
         cursor.execute(
-                "INSERT INTO ratings (user_id, movie_id, rating) VALUES (%s, %s, %s)",
+                "INSERT INTO rating (user_id, movie_id, rating) VALUES (%s, %s, %s)",
                 (rating.user, rating.movie, rating.rating)
                 )
         conn.commit()
         return {"message": "Rating recorded successfully"}
-    except:
-        raise HTTPException(status_code=500, detail="Database error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         conn.close()
 
@@ -124,8 +124,8 @@ async def view_movie(view: View):
                 )
         conn.commit()
         return {"message": "View recorded successfully"}
-    except:
-        raise HTTPException(status_code=500, detail="Database error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         conn.close()
 
@@ -140,8 +140,8 @@ async def has_seen_movie(user: str, movie: str):
                 )
         result = cursor.fetchall()
         return {"data": 0 if result == [] else 1}
-    except:
-        raise HTTPException(status_code=500, detail="Database error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:
         conn.close()
 
@@ -151,6 +151,6 @@ async def genres_movie(movie: str):
         imdb_movie = ia.get_movie(movie)
         genres = [genre.replace('_', ' ') for genre in imdb_movie.get('genres', [])]
         return {"data": genres}
-    except IMDbDataAccessError:
+    except Exception:
         raise HTTPException(status_code=404, detail="Movie not found")
 
