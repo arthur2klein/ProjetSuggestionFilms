@@ -1,6 +1,12 @@
 # ProjetSuggestionFilms
 Projet d'architecture et microservice d'ING3 ICC 2023/2024
 
+## Groupe
+- Biscorray Alexandre,
+- Kamgaing Rodrigue,
+- Klein Arthur,
+- Vacossin Antoine.
+
 ## Démarrage
 ``` bash
 docker-compose up --build
