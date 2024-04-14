@@ -93,6 +93,7 @@ class MovieService {
     final response = await http.get(
       uri,
     );
+print('The response to /movie/rating is $response');
     if (response.statusCode != 200) {
       return null;
     } else {
@@ -182,13 +183,16 @@ class MovieService {
           (user) => user.userid,
         )
         .toList();
+    final params = userIds
+        .map(
+          (value) => 'users=$value',
+        )
+        .join('&');
     final Uri uri = Uri(
       host: apiUrl,
       port: apiPort,
       path: '/movie/recommended',
-      queryParameters: {
-        'users': jsonEncode(userIds),
-      },
+      query: params,
     );
     final response = await http.get(uri);
     if (response.statusCode == 200) {

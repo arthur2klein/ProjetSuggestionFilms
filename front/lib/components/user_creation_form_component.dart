@@ -15,6 +15,7 @@ class _UserCreationFormComponentState extends State<UserCreationFormComponent> {
   String _uname = '';
   String _email = '';
   String _password = '';
+  String _loginMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +72,7 @@ class _UserCreationFormComponentState extends State<UserCreationFormComponent> {
               if (value == null || value.isEmpty) {
                 return 'Please confirm your password';
               }
+              print('Password is $_password and value is $value');
               /* if (value != _password) {
                 return 'Password do not match';
               } */
@@ -85,6 +87,13 @@ class _UserCreationFormComponentState extends State<UserCreationFormComponent> {
             },
             child: const Text('Create an account'),
           ),
+          if (_loginMessage.isNotEmpty)
+            Text(
+              _loginMessage,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
         ],
       ),
     );
@@ -95,13 +104,32 @@ class _UserCreationFormComponentState extends State<UserCreationFormComponent> {
         .hasMatch(email);
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      UserService().createUser(
+      final String loginResponse = await UserService().createUser(
         _uname,
         _email,
         _password,
+      );
+      if (loginResponse == '') {
+        setState(() {
+          _loginMessage = '';
+        });
+        _navigateToHome();
+      } else {
+        setState(() {
+          _loginMessage = loginResponse;
+        });
+      }
+    }
+  }
+
+  void _navigateToHome() {
+    if (mounted) {
+      Navigator.pushReplacementNamed(
+        context,
+        '/',
       );
     }
   }

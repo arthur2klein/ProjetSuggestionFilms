@@ -37,6 +37,9 @@ class UserService {
       final jsonResponse = json.decode(response.body);
       print(jsonResponse);
       currentUser = User.fromJson(jsonResponse['user']);
+      if (currentUser != null) {
+        GroupService().addUser(currentUser!);
+      }
       return '';
     } else {
       final jsonResponse = json.decode(response.body);
@@ -65,6 +68,9 @@ class UserService {
       final jsonResponse = json.decode(response.body);
       print(jsonResponse);
       currentUser = User.fromJson(jsonResponse['user']);
+      if (currentUser != null) {
+        GroupService().addUser(currentUser!);
+      }
       return '';
     } else {
       final jsonResponse = json.decode(response.body);

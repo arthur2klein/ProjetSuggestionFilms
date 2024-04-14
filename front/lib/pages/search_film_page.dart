@@ -13,11 +13,18 @@ class SearchFilmPage extends StatefulWidget {
 
 class _SearchFilmPageState extends State<SearchFilmPage> {
   TextEditingController searchController = TextEditingController();
+
+  bool isSearching = false;
+
   List<Movie> searchedMovies = [];
 
   Future<void> searchFilms(String query) async {
+    setState(() {
+      isSearching = true;
+    });
     List<Movie> search = await MovieService().search(query);
     setState(() {
+      isSearching = false;
       searchedMovies = search;
     });
   }
@@ -43,13 +50,15 @@ class _SearchFilmPageState extends State<SearchFilmPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: searchedMovies.length,
-              itemBuilder: (context, index) {
-                Movie movie = searchedMovies[index];
-                return MovieComponent(movie: movie, isShort: true);
-              },
-            ),
+            child: isSearching
+                ? const CircularProgressIndicator()
+                : ListView.builder(
+                    itemCount: searchedMovies.length,
+                    itemBuilder: (context, index) {
+                      Movie movie = searchedMovies[index];
+                      return MovieComponent(movie: movie, isShort: true);
+                    },
+                  ),
           ),
         ],
       ),
