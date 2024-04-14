@@ -29,13 +29,12 @@ class MovieComponent extends StatelessWidget {
     return formattedDate;
   }
 
-  String formatTime(int nSeconds) {
-    Duration duration = Duration(seconds: nSeconds);
+  String formatTime(int nMinutes) {
+    Duration duration = Duration(minutes: nMinutes);
     int hours = duration.inHours;
     int minutes = duration.inMinutes % 60;
-    int seconds = duration.inSeconds % 60;
     String formattedTime =
-        '${_twoDigits(hours)}:${_twoDigits(minutes)}:${_twoDigits(seconds)}';
+        '${_twoDigits(hours)}h${_twoDigits(minutes)}';
     return formattedTime;
   }
 
@@ -148,7 +147,7 @@ class MovieComponent extends StatelessWidget {
                       children: [
                         Text(movie.movietitle),
                         const SizedBox(width: 32),
-                        Text(formatDate(movie.releasedate)),
+                        Text(movie.releasedate.toString()),
                       ],
                     ),
                     Text('Director: ${movie.director}'),
@@ -231,7 +230,7 @@ class MovieComponent extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Text(formatDate(movie.releasedate)),
+                      Text(movie.releasedate.toString()),
                     ],
                   ),
                   Row(

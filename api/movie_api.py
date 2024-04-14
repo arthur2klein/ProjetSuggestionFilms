@@ -41,16 +41,20 @@ def get_imdb_rating(movie_id: str) -> float:
         return 0.0
 
 def get_infos_movie(movie):
+    ia.update(movie)
     movie_id = movie.movieID
     return {
             'movieid': movie_id,
             'movietitle': movie.get('title', ''),
             'releasedate': movie.get('year', 0),
-            'synopsis': ''.join(ia.get_movie_synopsis(movie_id)['data']['plot']),
-            'director': movie.get('director',''),
+            'synopsis': '\n'.join(movie.get('synopsis', [])),
+            'director': ', '.join(
+                director.get('name', '')
+                for director in movie.get('director','')
+                ),
             'imgurl': movie.get('full-size cover url', ''),
             'usernote': get_imdb_rating(movie_id),
-            'time': movie.get('runtimes', [0])[0] if movie.get('runtimes') else 0}
+            'time': movie.get('runtimes', ['0'])[0]}
 
 @router.get("/")
 async def movie(movie_id: str):
@@ -68,8 +72,8 @@ async def search_movie(query: str = Query(..., min_length=1)):
         for movie in results:
             movies.append(get_infos_movie(movie))
         return {'data': movies}
-    except Exception:
-        raise HTTPException(status_code=500, detail="IMDb data access error")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"IMDb data access error: {str(e)}")
 
 def get_rating(user: str, movie: str):
     conn = get_db_connection()
@@ -198,12 +202,13 @@ async def has_seen_movie(user: str, movie: str):
         conn.close()
 
 def get_genres(movie: str):
-    return [genre.replace('_', ' ') for genre in movie.get('genres', [])]
+    imdb_movie = ia.get_movie(movie)
+    ia.update(imdb_movie)
+    return [genre.replace('_', ' ') for genre in imdb_movie.get('genres', [])]
 
 @router.get("/genres")
 async def genres_movie(movie: str):
     try:
-        imdb_movie = ia.get_movie(movie)
         genres = get_genres(movie)
         return {"data": genres}
     except Exception:
@@ -220,11 +225,17 @@ def get_pref_user(user: str):
                 (user)
                 )
         result = cursor.fetchall()
+        print(f'Movies collected: {result=}')
         for movie, rating in result:
+            print('Examining the next movie')
+            print('Reading genres')
             genres = get_genres(movie)
+            print('Adding to the average')
             for genre in genres:
-                sum_by_genre[genre] += float(rating)
-                num_by_genre[genre] += 1
+                print(f'Adding to the sum for {genre=}')
+                sum_by_genre[genre] = sum_by_genre.get(genre, 0.) + rating
+                num_by_genre[genre] = num_by_genre.get(genre, 0) + 1
+        print('Returning')
         return {
                 key: sum_by_genre[key] / num_by_genre[key]
                 for key in sum_by_genre.keys()
@@ -240,7 +251,7 @@ def get_prefs_group(users: [str]):
     return [get_pref_user(user) for user in users]
 
 def get_keys_dicts(list_dict):
-    return {key for dict_ in list_dict for k in dict_.keys()}
+    return {key for dict_ in list_dict for key in dict_.keys()}
 
 def get_pref_group(users: [str]):
     sum_by_genre = dict()
@@ -258,23 +269,28 @@ def score_movies_for_group(users: [str], movies: [str]):
     score = dict()
     pref = get_pref_group(users)
     for movie in movies:
-        genres_movie = get_genres(movie)
-        score[movie] = sum(
-                pref.get(genre, 2.)
-                for genre in genres_movie
-                ) / len(genres_movie)
+        genres_movie = get_genres(movie.movieID)
+        if (len(genres_movie) == 0):
+            score[movie] = 2.
+        else:
+            score[movie] = sum(
+                    pref.get(genre, 2.)
+                    for genre in genres_movie
+                    ) / len(genres_movie)
     return score
 
 def movies_for_recommendations():
-    return ia.get_top250_movies()
+    return ia.search_movie('t', 128)
 
 @router.get("/recommended")
 async def recommended_for_user(users: list[str] = Query(..., title="User IDs")):
     dict_ = score_movies_for_group(users, movies_for_recommendations())
+    recommendations = sorted(dict_, key=dict_.get)
+    recommendations.reverse()
     return {
             "data":
             [
                 get_infos_movie(movie)
-                for movie in sorted(dict_, key=dict_.get)[:10]
+                for movie in recommendations[:10]
                 ]
             }

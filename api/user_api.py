@@ -86,7 +86,12 @@ async def get_all_users():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM users")
         result = cursor.fetchall()
-        return {"users": [u.dict() for u in result]}
+        return {"users": [{
+                'user_id': u[0],
+                'uname': u[1],
+                'email': u[2],
+                'password': u[3],
+                } for u in result]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
     finally:

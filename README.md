@@ -12,7 +12,8 @@ L'application démarre à localhost:3000
 - Calcul d'une note moyenne par genre pour chaque utilisateur du groupe,
 - La note du groupe pour un genre est la moyenne des notes individuelles (2 si
   non renseigné),
-- Collecte des films les plus populaires,
+- Collecte des films les plus populaires (a du être changé par les 128 films
+  les plus populaires pour la recherche 't'),
 - La note pour le film est la moyenne des notees des genres présents (2 si non
   renseigné),
 - Tri par note et affichage.
@@ -35,6 +36,10 @@ D'un premier lancement:
   présents correspondent aux genres des films bien notés.
 
 ## Known issue
+
+### Loading time
+Le temps de réponse d'IMDb est très élevé ce qui rend la recherche de films et
+la génération de recommendation très lente.
 
 ### Memory requirements
 L'application peut échouer lors de son lancement ou au cours d'une opération si
